@@ -1,4 +1,4 @@
-# Product Name
+# AutoMoneyLover
 > Automate Money Lover transaction logging
 
 This package uses Selenium browser to download transactions that are parsed by Mint, then uses a command line interface to automatically log those tranactions into Money Lover.
