@@ -11,7 +11,7 @@ setup(name='automoneylover',
                         ],
       entry_points={
           'console_scripts': [
-              'automoneylover:log= automoneylover.main:main',
+              'automoneylover:log = automoneylover.main:main',
           ]
       }
  )
