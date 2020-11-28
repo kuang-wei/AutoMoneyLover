@@ -69,6 +69,7 @@ def main():
 
 
     # init Mint
+    print("Logging into Mint")
     mint = mintapi.Mint(
         args.username,
         password,
@@ -81,18 +82,21 @@ def main():
     )
 
     # Get Transactions
+    print("Obtaining transactions")
     df = get_transactions(mint)
 
     # Filter by date, if applicable
     if args.start_date:
+        print(f"Filtering transactions before {args.start_date}")
         df = df[df["date"] >= args.start_date].copy()
 
     # Capitalize first character in category
     df["category"] = df["category"].str.title()
 
     # Log transactions in Money Lover
-    for idx, row in df.iterrows():
-        log_transaction(row, wallet)
+    print("Start logging transactions into Money Lover")
+    for _, row in df.iterrows():
+        log_transaction(row, args.wallet)
 
 
 if __name__ == "__main__":
