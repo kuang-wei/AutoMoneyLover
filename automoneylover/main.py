@@ -47,9 +47,12 @@ def log_transaction(row, wallet):
         category = "Resell"
 
     if transaction_type == "debit":
-        subprocess.run(f"moneylover expense '{wallet}' {amount} -c {category} -d {date} -m '{description}'")
+        subprocess.run(f"moneylover expense '{wallet}' {amount} -c '{category}' -d '{date}' -m '{description}'", shell=True)
+        print()
     else:
-        subprocess.run(f"moneylover income '{wallet}' {amount} -c {category} -d {date} -m '{description}'")
+        subprocess.run(f"moneylover income '{wallet}' {amount} -c '{category}' -d '{date}' -m '{description}'", shell=True)
+        print()
+
 
 def main():
     args = parse_args()
