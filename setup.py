@@ -8,6 +8,7 @@ setup(name='automoneylover',
       packages=['automoneylover'],
       install_requires=['mintapi',
                         'keyring',
+                        'tabulate',
                         ],
       entry_points={
           'console_scripts': [

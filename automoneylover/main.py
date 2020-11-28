@@ -7,7 +7,7 @@ import getpass
 import keyring
 from mintapi.api import assert_pd
 
-from automoneylover.utils import map_category, parse_args
+from automoneylover.utils import map_category, parse_args, MAPPING
 
 
 def get_transactions(mint):
@@ -102,16 +102,42 @@ def main():
 
     # Filter by date, if applicable
     if args.start_date:
-        print(f"Filtering transactions before {args.start_date}")
+        print(f"Filtering transactions that occured before {args.start_date}")
         df = df[df["date"] >= args.start_date].copy()
+    if args.end_date:
+        print(f"Fitering transactions that occured after   {args.end_date}")
+        df = df[df["date"] <= args.end_date].copy()
 
     # Capitalize first character in category
     df["category"] = df["category"].str.title()
 
-    # Log transactions in Money Lover
-    print("Start logging transactions into Money Lover")
-    for _, row in df.iterrows():
-        log_transaction(row, args.wallet)
+    # Check unmapped categories
+    unmapped = []
+    for category in pd.unique(df.category):
+        if category not in MAPPING:
+            unmapped.append(category)
+            print(f"{category:>25s} is unmapped")
+    proceed = input("Proceed with logging? (y/n/print) ")
+
+    if proceed == "print":
+        for category in unmapped:
+            sample_df = df.query(f"category == '{category}'")[
+                ["date", "description", "original_description", "category", "transaction_type"]
+            ]
+            sample_df = sample_df.sample(n=min(5, len(sample_df)))
+            print(f"Category: {category:<25}")
+            print(sample_df.to_markdown())
+            _ = input("Press ENTER for next category ")
+            print("\n---\n")
+        proceed = input("Proceed with logging? (y/n/CTRL-C) ")
+
+    if proceed == "y":
+        # Log transactions in Money Lover
+        print("Start logging transactions into Money Lover")
+        for _, row in df.iterrows():
+            log_transaction(row, args.wallet)
+    else:
+        print("Ending program")
 
 
 if __name__ == "__main__":
