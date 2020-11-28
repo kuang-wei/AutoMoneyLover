@@ -13,7 +13,7 @@ MAPPING = {
     "Dentist": "Medical",
     "Food & Dining": "Food & Beverage",
     "Mortgage & Rent": "Housing",
-    "Gas & Fuel": "Transportation",
+    "Gas & Fuel": "Travel",  # Don't really buy gas under normal circustances
     "Rental Car & Taxi": "Travel",
     "Parking": "Transportation",
     "Hotel": "Travel",
