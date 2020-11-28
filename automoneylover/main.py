@@ -10,9 +10,6 @@ from mintapi.api import assert_pd
 from automoneylover.utils import map_category, parse_args
 
 
-WALLET = "Kuang Wei"
-
-
 def get_transactions(mint):
     assert_pd()
     s = StringIO(mint.get_transactions_csv(
