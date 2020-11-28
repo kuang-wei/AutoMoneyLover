@@ -8,6 +8,12 @@ This package uses Selenium browser to download transactions that are parsed by M
 OS X & Linux:
 
 ```sh
+npm i -g moneylover-cli
+pip install mintapi
+wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
+unzip chromedriver_linux64.zip
+rm chromedriver_linux64.zip
+mv ./chromedriver ~/bin/chromedriver
 cd AutoMoneyLover
 pip -e install .
 ```
