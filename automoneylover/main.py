@@ -41,6 +41,8 @@ def log_transaction(row, wallet):
     if category == "Credit Card Payment":
         print("Not logging credit card payment to avoid double counting")
         return None
+    elif description == "Target":
+        category = "Groceries"
     elif category == "Income" and "Gusto" in description:  ## too personalized
         category = "Salary"
     elif category == "Transfer" and transaction_type == "credit" and "PAYPAL" in description:
