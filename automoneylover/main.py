@@ -35,7 +35,7 @@ def log_transaction(row, wallet):
     if "DIVVY" in raw_description:
         category = "Divvy"
 
-    if "VANGUARD BUY INVESTMENT" in raw_description:
+    if "VANGUARD BUY INVESTMENT" in raw_description or "VANGUARD EDI" in raw_description:
        category = "Investment"
 
     if category == "Credit Card Payment":
@@ -47,6 +47,19 @@ def log_transaction(row, wallet):
         category = "Salary"
     elif category == "Transfer" and transaction_type == "credit" and "PAYPAL" in description:
         category = "Resell"
+    elif category == "Transfer" and ("payment" in raw_description.lower() or "chase" in raw_description.lower()) and transaction_type == "credit":
+        print("Not logging credit card payment to avoid double counting")
+        return None
+    elif category == "Transfer" and ("kith" in description.lower() or "ssense" in description.lower() or "soylent" in description.lower()):
+        category = "Shopping"
+    elif category == "Check" and amount == 925.0:
+        category == "Housing"
+    elif category == "Kids" and "DANCE" in description:
+        category == "Dance"
+    elif category == "Service Fee" and "annual membership fee" in description.lower():
+        category == "Credit Card Fees"
+    elif category == "Business Services" and "USPS" in description or "UPS" in description:
+        category == "Shipping"
 
     if transaction_type == "debit":
         subprocess.run(f"moneylover expense '{wallet}' {amount} -c '{category}' -d '{date}' -m '{description}'", shell=True)
