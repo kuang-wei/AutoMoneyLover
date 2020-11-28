@@ -20,21 +20,16 @@ pip -e install .
 
 ## Usage example
 
-To be updated
-
+```sh
+automoneylover:log kuangweiturbo "SAMPLE WALLET" --start_date 2020-01-01 --end_date 2020-01-15
+```
+* `SAMPLE WALLET` needs to be substituted to your own wallet name
+* `--start_date` and `--end_date` are optional
+    * Though they are highly recommended in order to avoid adding too many errorneous/miscategorized transations over a long period of time, which can be very cumbersome to correct in Money Lover
 
 ## Release History
-
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
 * 0.1.0
     * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
 * 0.0.1
     * Work in progress
 
