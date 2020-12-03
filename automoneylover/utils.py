@@ -1,4 +1,6 @@
+import re
 import argparse
+import pandas as pd
 
 
 MAPPING = {
@@ -42,11 +44,26 @@ MAPPING = {
 }
 
 
+ANSI_ESCAPE = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+
+
 def map_category(category):
     if category in MAPPING:
         return MAPPING[category]
     else:
         return category
+
+
+def check_duplicate(date, category, amount, description, transactions):
+    """
+    TODO: use Pandas.DataFrame to make more efficient
+    """
+    if type(date) == pd._libs.tslibs.timestamps.Timestamp:
+        date = date.strftime("%Y-%m-%d")
+    for t in transactions:
+        if date == t.date and category == t.category and amount == t.amount and description == t.description:
+            return t
+    return None
 
 
 def parse_args():

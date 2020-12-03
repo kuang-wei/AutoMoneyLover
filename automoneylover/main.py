@@ -7,7 +7,8 @@ import getpass
 import keyring
 from mintapi.api import assert_pd
 
-from automoneylover.utils import map_category, parse_args, MAPPING
+from automoneylover.utils import map_category, parse_args, check_duplicate, MAPPING, ANSI_ESCAPE
+from automoneylover.transaction import MoneyLoverTransaction
 
 
 def get_transactions(mint):
@@ -21,9 +22,24 @@ def get_transactions(mint):
     return df
 
 
-def log_transaction(row, wallet):
+def get_moneylover_log(start_date, end_date, wallet="Kuang Wei"):
+    output = subprocess.run(
+        f"moneylover transactions '{wallet}' --startDate {start_date} --endDate {end_date}",
+        shell=True,
+        capture_output=True,
+        text=True,
+    )
+    result = ANSI_ESCAPE.sub('', output.stdout)
+    transaction_strs = result.split("\n")[2:-2]
+    transactions = [MoneyLoverTransaction(transaction_str) for transaction_str in transaction_strs]
+    return transactions
+
+
+def log_transaction(row, wallet, transactions):
     """
     row: pandas.core.series.Series
+    transactions: list(automoneylover.transaction.MoneyLoverTransaction)
+        already logged transactions
     """
     amount = row.amount
     category = map_category(row.category)
@@ -39,7 +55,7 @@ def log_transaction(row, wallet):
        category = "Investment"
 
     if category == "Credit Card Payment":
-        print("Not logging credit card payment to avoid double counting")
+        print("Not logging credit card payment to avoid double counting\n")
         return None
     elif description == "Target":
         category = "Groceries"
@@ -61,13 +77,17 @@ def log_transaction(row, wallet):
     elif category == "Business Services" and "USPS" in description or "UPS" in description:
         category == "Shipping"
 
-    if transaction_type == "debit":
-        subprocess.run(f"moneylover expense '{wallet}' {amount} -c '{category}' -d '{date}' -m '{description}'", shell=True)
-        print()
-    else:
-        subprocess.run(f"moneylover income '{wallet}' {amount} -c '{category}' -d '{date}' -m '{description}'", shell=True)
-        print()
+    duplicate = check_duplicate(date, category, amount, description, transactions)
+    if not duplicate:
+        if transaction_type == "debit":
+            subprocess.run(f"moneylover expense '{wallet}' {amount} -c '{category}' -d '{date}' -m '{description}'", shell=True)
 
+        else:
+            subprocess.run(f"moneylover income '{wallet}' {amount} -c '{category}' -d '{date}' -m '{description}'", shell=True)
+
+    else:
+        print(f"Transaction {duplicate.date} | {duplicate.description:^20s} | {duplicate.amount:>4.2f} | has already been logged")
+    print()
 
 def main():
     args = parse_args()
@@ -117,7 +137,8 @@ def main():
         if category not in MAPPING:
             unmapped.append(category)
             print(f"{category:>25s} is unmapped")
-    proceed = input("Proceed with logging? (y/n/print) ")
+    print(f"Found a total of {len(unmapped)} unmapped categories")
+    proceed = input("Proceed with logging? (y/n/print) ")  # TODO: make more user friendly
 
     if proceed == "print":
         for category in unmapped:
@@ -132,10 +153,15 @@ def main():
         proceed = input("Proceed with logging? (y/n/CTRL-C) ")
 
     if proceed == "y":
+        # Get logged transactions
+        print("Obtaining already logged transactions to avoid repeating transactions")
+        start_date = df.date.min()
+        end_date = df.date.max()
+        transactions = get_moneylover_log(start_date, end_date, wallet=args.wallet)
         # Log transactions in Money Lover
         print("Start logging transactions into Money Lover")
         for _, row in df.iterrows():
-            log_transaction(row, args.wallet)
+            log_transaction(row, args.wallet, transactions)
     else:
         print("Ending program")
 

@@ -32,6 +32,8 @@ automoneylover:log kuangweiturbo "SAMPLE WALLET" --start_date 2020-01-01 --end_d
     * Though they are highly recommended in order to avoid adding too many errorneous/miscategorized transations over a long period of time, which can be very cumbersome to correct in Money Lover
 
 ## Release History
+* 0.1.1
+    * Add support for duplicated transaction safety check
 * 0.1.0
     * The first proper release
 * 0.0.1
