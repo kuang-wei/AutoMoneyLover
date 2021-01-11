@@ -11,11 +11,13 @@ OS X & Linux:
 # Download Money Lover command line interface
 npm i -g moneylover-cli
 
-# Download Chromedriver for version 83 and add it to path
-wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
+# Download Chromedriver for version 87 and add it to path
+wget https://chromedriver.storage.googleapis.com/87.0.4280.88/chromedriver_linux64.zip
 unzip chromedriver_linux64.zip
 rm chromedriver_linux64.zip
 mv ./chromedriver ~/bin/chromedriver
+
+The Chromedriver simply has to match up to the Chromium/Chrome browser version that you have installed on your machine
 
 # Install automoneylover
 cd AutoMoneyLover
