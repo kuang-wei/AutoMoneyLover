@@ -59,6 +59,8 @@ def log_transaction(row, wallet, transactions):
         return None
     elif description == "Target":
         category = "Groceries"
+    elif description == "Wal-Mart":
+        category = "Groceries"
     elif category == "Income" and "Gusto" in description:  ## too personalized
         category = "Salary"
     elif category == "Transfer" and transaction_type == "credit" and "PAYPAL" in description:
