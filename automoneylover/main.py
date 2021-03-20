@@ -48,10 +48,19 @@ def log_transaction(row, wallet, transactions):
     raw_description = row.original_description
     transaction_type = row.transaction_type
 
-    if "DIVVY" in raw_description:
+    if (
+        "DIVVY" in raw_description or
+        "Lyft" in description
+    ):
         category = "Divvy"
 
-    if "VANGUARD BUY INVESTMENT" in raw_description or "VANGUARD EDI" in raw_description:
+    if (
+        "VANGUARD BUY INVESTMENT" in raw_description or
+        "VANGUARD EDI" in raw_description
+    ) or (
+        "VANGUARD BUY INVESTMENT" in description or
+        "VANGUARD EDI" in description
+    ):
        category = "Investment"
 
     if category == "Credit Card Payment":
@@ -64,6 +73,10 @@ def log_transaction(row, wallet, transactions):
     elif category == "Income" and "Gusto" in description:  ## too personalized
         category = "Salary"
     elif category == "Transfer" and transaction_type == "credit" and "PAYPAL" in description:
+        category = "Resell"
+    elif category == "Transfer" and transaction_type == "credit" and "Venmo Cashout" in description:
+        category = "Resell"
+    elif category == "Transfer" and transaction_type == "credit" and "EBAY EDI" in description:
         category = "Resell"
     elif category == "Transfer" and ("payment" in raw_description.lower() or "chase" in raw_description.lower()) and transaction_type == "credit":
         print("Not logging credit card payment to avoid double counting")
