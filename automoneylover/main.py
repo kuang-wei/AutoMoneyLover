@@ -61,7 +61,9 @@ def log_transaction(row, wallet, transactions):
         "VANGUARD BUY INVESTMENT" in description or
         "VANGUARD EDI" in description
     ):
-       category = "Investment"
+       # category = "Investment"
+       print(f"Detected Vanguard investment transaction. Skip as we do not log investment in MoneyLover.")
+       return None
 
     if category == "Credit Card Payment":
         print("Not logging credit card payment to avoid double counting\n")
