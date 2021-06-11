@@ -17,7 +17,8 @@ unzip chromedriver_linux64.zip
 rm chromedriver_linux64.zip
 mv ./chromedriver ~/bin/chromedriver
 
-The Chromedriver simply has to match up to the Chromium/Chrome browser version that you have installed on your machine
+# The Chromedriver simply has to match up to the Chromium/Chrome browser
+# version that you have installed on your machine
 
 # Install automoneylover
 cd AutoMoneyLover
